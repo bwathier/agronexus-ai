@@ -4,7 +4,7 @@
 # Last updated: 2025-10-29
 
 #====Personal preference, adjust per preference====
-# options(prompt = "R> ")
+ options(prompt = "R> ")
 #======
 
 # ----------------------------------------------------------
@@ -26,14 +26,14 @@ save_rdata_both <- function(object, filename) {
 }
 
 # ----------------------------------------------------------
-# STEP 0: Option to Install Required Packages, remove '#' if needed
+# STEP 0: Option to Install Required Packages, remove/add '#' if needed
 # ----------------------------------------------------------
-# packages <- c("WDI", "prophet", "dplyr", "ggplot2", "readr", "lubridate", 
-#              "nasapower", "tidyr", "Metrics")
-# install_if_missing <- function(p) {
-#  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-#}
-# lapply(packages, install_if_missing)
+packages <- c("WDI", "prophet", "dplyr", "ggplot2", "readr", "lubridate", 
+              "nasapower", "tidyr", "Metrics")
+ install_if_missing <- function(p) {
+  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+}
+ lapply(packages, install_if_missing)
 # =======Hashtags added above, remove if needing to add packages
 
 # ----------------------------------------------------------
@@ -116,13 +116,14 @@ merged_data <- left_join(yield_data, climate_annual, by = "year") %>%
 # ----------------------------------------------------------
 # STEP 5b: Load and Process Maize Price Data (Wide Format)
 # ----------------------------------------------------------
-# Check for required price data file
-if (!file.exists("KEN_RTFP_mkt_2007_2025.csv")) {
-  stop("Missing required file: KEN_RTFP_mkt_2007_2025.csv. Please place it in the working directory.")
+csv_path <- "data/KEN_RTFP_mkt_2007_2025.csv"
+if (!file.exists(csv_path)) {
+  stop("Missing required file: KEN_RTFP_mkt_2007_2025.csv in /data/. 
+       Please check the path.")
 }
 
 # Load Price data
-price_data <- read_csv("KEN_RTFP_mkt_2007_2025.csv")  # Make sure this CSV is in your working directory or provide path
+price_data <- read_csv(csv_path)  
 
 price_annual <- price_data %>%
   filter(!is.na(maize)) %>%

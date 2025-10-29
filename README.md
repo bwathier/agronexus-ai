@@ -51,15 +51,18 @@ agronexus-ai/
    Execute `scripts/CropYieldForecast.R` to generate predictions.
 
 4. **Launch the dashboard**  
-   Run `app/CropYieldApp.R` to explore the interactive Shiny dashboard.
+   Run `runApp("app")` in RStudio to explore the interactive Shiny dashboard.
 
 ---
 ## 📊 Data Requirements
 
-To run the forecasting pipeline successfully, ensure the following file is present in your working directory:
+To run the forecasting pipeline successfully, ensure the following file is 
+present in your working directory:
 
 - `KEN_RTFP_mkt_2007_2025.csv`  
-  Contains annual maize market prices for Kenya. This file enriches the forecasting model with economic context. If unavailable, substitute with a similar dataset or contact the project author.
+  Contains annual maize market prices for Kenya. This file enriches the 
+  forecasting model with economic context. If unavailable, substitute with a 
+  similar dataset or contact the project author.
 
 ---
 
@@ -86,8 +89,23 @@ Shiny app folder (`CropYieldApp/`) for seamless integration.
 
 
 ## 🖼️ Dashboard Preview
-![Dashboard Preview](app/dashboard_screenshot.png)  
-*Visualizing crop yield forecasts and regional trends.*
+
+AgroNexus AI delivers an interactive Shiny dashboard that empowers agribusiness
+stakeholders to explore crop yield forecasts, assess model performance, and 
+evaluate residuals over time.
+
+### 🔼 Forecast Panel: Controls and Interactive Plot
+Users can adjust the year range, toggle actual yield data, and view confidence 
+intervals to explore forecast dynamics.
+
+![Dashboard Top](images/dashboard_top.png)
+
+### 🔽 Diagnostic Panel: Model Metrics and Residuals
+Displays MAE, MAPE, and RMSE alongside a residuals plot to assess model 
+accuracy and temporal bias.
+
+![Dashboard Bottom](images/dashboard_bottom.png)
+
 
 ## 📜 License
 This project is licensed under the MIT License.  

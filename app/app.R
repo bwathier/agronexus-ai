@@ -9,13 +9,16 @@ library(dplyr)
 library(Metrics)
 
 # Check to make sure data was saved from running CropYieldForecast.R
-if (!file.exists("combined_data.RData") || !file.exists("residuals_df.RData")) {
-  stop("Required .RData files not found. Please run CropYieldForecast.R first.")
+if (!file.exists("../combined_data.RData") || 
+    !file.exists("../residuals_df.RData")) {
+  stop("Required .RData files not found in parent directory. 
+       Please run CropYieldForecast.R first.")
 }
 
+
 # Load preprocessed data
-load("combined_data.RData")   # combined_data with ds, yhat, yield_actual, etc.
-load("residuals_df.RData")    # residuals_df with ds, residual
+load("../combined_data.RData")   # combined_data with ds, yhat, yield_actual, etc.
+load("../residuals_df.RData")    # residuals_df with ds, residual
 
 ui <- fluidPage(
   # Ensure mobile responsiveness
