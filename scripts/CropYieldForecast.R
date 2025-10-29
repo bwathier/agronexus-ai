@@ -1,5 +1,11 @@
-options(prompt = "R> ")
-setwd("D:/Bill/SNHU/IT697/IT697 Module 9/StopHunger Project/CropYieldForecast")
+# CropYieldForecast.R
+# Author: Bill R. Wathier
+# Description: Time series forecasting of crop yields using historical data
+# Last updated: 2025-10-29
+
+#====Personal preference, adjust per preference====
+# options(prompt = "R> ")
+#======
 
 # ----------------------------------------------------------
 # Define second output directory for Shiny app
@@ -20,14 +26,15 @@ save_rdata_both <- function(object, filename) {
 }
 
 # ----------------------------------------------------------
-# STEP 0: Install Required Packages (Run once)
+# STEP 0: Option to Install Required Packages, remove '#' if needed
 # ----------------------------------------------------------
-packages <- c("WDI", "prophet", "dplyr", "ggplot2", "readr", "lubridate", 
-              "nasapower", "tidyr", "Metrics")
-install_if_missing <- function(p) {
-  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
-}
-lapply(packages, install_if_missing)
+# packages <- c("WDI", "prophet", "dplyr", "ggplot2", "readr", "lubridate", 
+#              "nasapower", "tidyr", "Metrics")
+# install_if_missing <- function(p) {
+#  if (!requireNamespace(p, quietly = TRUE)) install.packages(p)
+#}
+# lapply(packages, install_if_missing)
+# =======Hashtags added above, remove if needing to add packages
 
 # ----------------------------------------------------------
 # STEP 1: Load Libraries
@@ -58,7 +65,7 @@ yield_data <- yield_raw %>%
 # ----------------------------------------------------------
 # STEP 3: Fetch Rainfall + Temperature from NASA POWER
 # ----------------------------------------------------------
-lat <- -1.2921   # Nairobi
+lat <- -1.2921   # Nairobi chosen as a case study example
 lon <- 36.8219
 start_date <- min(yield_data$ds)
 end_date <- max(yield_data$ds)
@@ -109,6 +116,12 @@ merged_data <- left_join(yield_data, climate_annual, by = "year") %>%
 # ----------------------------------------------------------
 # STEP 5b: Load and Process Maize Price Data (Wide Format)
 # ----------------------------------------------------------
+# Check for required price data file
+if (!file.exists("KEN_RTFP_mkt_2007_2025.csv")) {
+  stop("Missing required file: KEN_RTFP_mkt_2007_2025.csv. Please place it in the working directory.")
+}
+
+# Load Price data
 price_data <- read_csv("KEN_RTFP_mkt_2007_2025.csv")  # Make sure this CSV is in your working directory or provide path
 
 price_annual <- price_data %>%
@@ -128,7 +141,7 @@ save_csv_both(merged_data %>% mutate(Year = format(ds, "%Y")), "historical_yield
 # ----------------------------------------------------------
 # STEP 6: Train Prophet Model with 4 Regressors
 # ----------------------------------------------------------
-m <- prophet()
+m <- prophet()  # Using prophet for flexibility and handling seasonality
 m <- add_regressor(m, 'rainfall')
 m <- add_regressor(m, 'rainfall_lag1')
 m <- add_regressor(m, 'temperature')
@@ -139,6 +152,12 @@ m <- fit.prophet(m, merged_data)
 # STEP 7: Forecast Next 5 Years
 # ----------------------------------------------------------
 future <- make_future_dataframe(m, periods = 5, freq = "year")
+
+# Log forecast horizon
+message("Forecasting maize yield for next 5 years: ", 
+        format(max(merged_data$ds) + lubridate::years(1)), 
+        " to ", 
+        format(max(merged_data$ds) + lubridate::years(5)))
 
 future$rainfall <- c(merged_data$rainfall, rep(mean(merged_data$rainfall, na.rm = TRUE), 5))
 future$rainfall_lag1 <- c(merged_data$rainfall_lag1, rep(mean(merged_data$rainfall_lag1, na.rm = TRUE), 5))
@@ -165,6 +184,10 @@ combined_data <- left_join(combined_data,
 
 save_csv_both(combined_data, "maize_yield_forecast_with_price.csv")
 
+# Log number of rows saved
+message("Saved ", nrow(combined_data), 
+        " rows to maize_yield_forecast_with_price.csv")
+
 # ----------------------------------------------------------
 # STEP 9: Quantitative Impact Assessment (Metrics)
 # ----------------------------------------------------------
@@ -179,6 +202,10 @@ cat("\nModel Performance Metrics:\n")
 cat(sprintf("MAE: %.3f\n", mae_val))
 cat(sprintf("MAPE: %.2f%%\n", mape_val))
 cat(sprintf("RMSE: %.3f\n", rmse_val))
+
+# Save metrics to CSV for dashboard or review
+metrics <- data.frame(MAE = mae_val, MAPE = mape_val, RMSE = rmse_val)
+save_csv_both(metrics, "model_performance_metrics.csv")
 
 residuals_df <- combined_data %>%
   filter(Type == "Actual") %>%
