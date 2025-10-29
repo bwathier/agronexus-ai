@@ -1,0 +1,5 @@
+*.RData
+*.pbix
+*.csv
+session_info*.txt
+.Rproj.user
