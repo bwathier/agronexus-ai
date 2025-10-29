@@ -106,6 +106,15 @@ accuracy and temporal bias.
 
 ![Dashboard Bottom](images/dashboard_bottom.png)
 
+## Data Sources
+
+This project uses publicly available datasets from the following sources:
+
+- [NASA POWER](https://power.larc.nasa.gov/) – Provides agro-climatic and solar radiation data used for environmental context and modeling inputs.
+- [FAOSTAT](https://www.fao.org/faostat/en/#home) – Supplies agricultural production and yield statistics used for model training and validation.
+
+> Note: All data was downloaded manually and is not pulled live from these sources.
+
 
 ## 📜 License
 This project is licensed under the MIT License.  
