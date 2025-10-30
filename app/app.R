@@ -72,6 +72,12 @@ ui <- fluidPage(
   # Residuals Plot
   fluidRow(
     column(12, plotOutput("residualsPlot", height = "400px"))
+  ),
+  
+  # Data Attribution Footer
+  tags$footer(
+    style = "text-align:center; padding:10px; font-size:0.85em; color:gray;",
+    HTML("Data sources: <a href='https://power.larc.nasa.gov/' target='_blank'>NASA POWER</a> and <a href='https://www.fao.org/faostat/en/#home' target='_blank'>FAOSTAT</a>")
   )
 )
 
